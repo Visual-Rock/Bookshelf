@@ -16,7 +16,8 @@ public static class KeycloakHelper
             .WithClientType(KeycloakClientType.OpenIdConnect)
             .WithStandardFlow()
             .WithClientAuthentication()
-            .WithRedirectUris($"{url}/signin-oidc", $"{url}/signout-oidc")
+            .WithRedirectUris($"{url}/signin-oidc")
+            .WithPostLogoutRedirectUris($"{url}/signout-callback-oidc")
             .WithWebOrigins($"{url}", ui.GetEndpoint().EndpointAnnotation.GetUrl())
             .WithClientSecret(BookshelfClientSecret);
 

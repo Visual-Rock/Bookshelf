@@ -1,7 +1,9 @@
 using System.Security.Claims;
 using Bookshelf.Api.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace Bookshelf.Api.Extensions;
 
@@ -54,14 +56,25 @@ public static class HostApplicationBuilderExtensions
             {
                 config.Bind(o);
 
-                o.ResponseType = "code";
+                o.ResponseType = OpenIdConnectResponseType.Code;
+                o.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 o.GetClaimsFromUserInfoEndpoint = true;
+                o.MapInboundClaims = false;
+                
+                o.Events.OnRedirectToIdentityProviderForSignOut = context =>
+                {
+                    var idToken = context.HttpContext.User.FindFirst("id_token")?.Value;
+                    if (idToken is not null)
+                        context.ProtocolMessage.IdTokenHint = idToken;
+                    return Task.CompletedTask;
+                };
 
                 o.Events.OnTokenValidated = async context =>
                 {
                     var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
 
-                    var externalReference = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                    var externalReference = context.Principal?.FindFirst("sub")?.Value;
+                    var idToken = context.TokenEndpointResponse?.IdToken ?? context.ProtocolMessage?.IdToken;
                     var username = context.Principal?.FindFirst("name")?.Value ??
                                    context.Principal?.FindFirst(ClaimTypes.Name)?.Value ??
                                    externalReference;
@@ -73,7 +86,9 @@ public static class HostApplicationBuilderExtensions
                     }
 
                     var user = await userService.GetOrCreateUserAsync(username!, externalReference);
-
+                    
+                    if (idToken is not null) 
+                        context.Principal!.Identities.First().AddClaim(new Claim("id_token", idToken));
                     if (context.Principal?.Identity is ClaimsIdentity identity)
                         identity.AddClaim(new Claim(ClaimTypes.Name, user.Username));
                 };
