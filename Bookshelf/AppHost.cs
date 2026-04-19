@@ -13,11 +13,9 @@ var api = builder.AddProject<Bookshelf_Api>("bookshelf-api")
     .WaitForCompletion(dbMigrator).WithReference(db);
 
 var web = builder.AddViteApp("bookshelf-web", "../Bookshelf.Web")
-    .WithReference(api)
-    .WithExternalHttpEndpoints()
-    .PublishAsDockerFile();
+    .WithReference(api).WithEndpoint("http", annotation => annotation.Port = 5028);
 
-KeycloakHelper.ConfigureKeycloak(keycloak, api);
+KeycloakHelper.ConfigureKeycloak(keycloak, api, web);
 KeycloakHelper.AddKeycloakEnvironment(keycloak, api);
 
 api.WithEnvironment("Cors:AllowedOrigins", web.GetEndpoint().EndpointAnnotation.GetUrl());
