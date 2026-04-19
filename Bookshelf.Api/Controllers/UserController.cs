@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,5 +15,13 @@ public class UserController : ControllerBase
     {
         return Challenge(new AuthenticationProperties { RedirectUri = redirectUri },
             OpenIdConnectDefaults.AuthenticationScheme);
+    }
+
+    [HttpPost]
+    [Route("logout")]
+    public IActionResult Logout()
+    {
+        return SignOut(new AuthenticationProperties { RedirectUri = "/" },
+            CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
     }
 }
