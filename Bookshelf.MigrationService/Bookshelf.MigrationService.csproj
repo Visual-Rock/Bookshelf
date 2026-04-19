@@ -9,9 +9,13 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.4"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Bookshelf.DataAccess\Bookshelf.DataAccess.csproj" />
+        <ProjectReference Include="..\Bookshelf.DataAccess\Bookshelf.DataAccess.csproj"/>
     </ItemGroup>
 </Project>

@@ -6,30 +6,31 @@ public static class KeycloakHelper
 {
     private const string BookshelfClientSecret = "23OfASP5ir7cPaMx5K3ozKP0tRQAL7Bp";
 
-    public static void ConfigureKeycloak(IResourceBuilder<KeycloakResource> keycloak)
+    public static void ConfigureKeycloak(IResourceBuilder<KeycloakResource> keycloak,
+        IResourceBuilder<IResourceWithEndpoints> resource)
     {
         var realm = keycloak.AddRealm("bookshelf");
 
+        var url = resource.GetEndpoint().EndpointAnnotation.GetUrl();
         var client = realm.AddClient("bookshelf", "bookshelf")
             .WithClientType(KeycloakClientType.OpenIdConnect)
             .WithStandardFlow()
             .WithClientAuthentication()
-            .WithRedirectUris("http://localhost:*/authentication/login-callback")
-            .WithWebOrigins("http://localhost:*")
+            .WithRedirectUris($"{url}/signin-oidc")
+            .WithWebOrigins($"{url}")
             .WithClientSecret(BookshelfClientSecret);
 
-        var user = realm.AddUser("user", "user@example.com", "User", "", "user");
+        var user = realm.AddUser("user", "user@example.com", "User", "user", "user");
     }
 
     public static void AddKeycloakEnvironment(IResourceBuilder<KeycloakResource> keycloak,
         IResourceBuilder<IResourceWithEnvironment> resource)
     {
-        var keyCloakEndpoint = keycloak.GetEndpoint();
-        resource.WithEnvironment("Authentication:keycloak:Authority",
-            $"{keyCloakEndpoint.EndpointAnnotation.GetUrl()}/realms/bookshelf");
-        resource.WithEnvironment("Authentication:keycloak:ClientId", "bookshelf");
-        resource.WithEnvironment("Authentication:keycloak:ClientSecret", BookshelfClientSecret);
-        resource.WithEnvironment("Authentication:keycloak:CallbackPath", "/signin-oidc");
-        resource.WithEnvironment("Authentication:keycloak:RequireHttpsMetadata", keyCloakEndpoint.IsHttps.ToString());
+        var kc = keycloak.GetEndpoint();
+        resource.WithEnvironment("Authentication:Authority", $"{kc.EndpointAnnotation.GetUrl()}/realms/bookshelf");
+        resource.WithEnvironment("Authentication:ClientId", "bookshelf");
+        resource.WithEnvironment("Authentication:ClientSecret", BookshelfClientSecret);
+        resource.WithEnvironment("Authentication:CallbackPath", "/signin-oidc");
+        resource.WithEnvironment("Authentication:RequireHttpsMetadata", kc.IsHttps.ToString());
     }
 }
