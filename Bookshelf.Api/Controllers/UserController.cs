@@ -17,6 +17,21 @@ public class UserController : ControllerBase
             OpenIdConnectDefaults.AuthenticationScheme);
     }
 
+    [HttpGet]
+    [Route("info")]
+    public IActionResult GetInfo()
+    {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            var id = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var username = User.Identity.Name;
+
+            return Ok(new { Id = id, Username = username });
+        }
+
+        return Unauthorized();
+    }
+
     [HttpPost]
     [Route("logout")]
     public IActionResult Logout()
