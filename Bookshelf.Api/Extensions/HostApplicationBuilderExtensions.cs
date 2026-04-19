@@ -55,7 +55,6 @@ public static class HostApplicationBuilderExtensions
                 config.Bind(o);
 
                 o.ResponseType = "code";
-                o.SaveTokens = true;
                 o.GetClaimsFromUserInfoEndpoint = true;
 
                 o.Events.OnTokenValidated = async context =>

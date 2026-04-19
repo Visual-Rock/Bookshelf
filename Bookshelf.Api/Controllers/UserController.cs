@@ -32,11 +32,12 @@ public class UserController : ControllerBase
         return Unauthorized();
     }
 
-    [HttpPost]
+    [HttpGet]
     [Route("logout")]
-    public IActionResult Logout()
+    public IActionResult Logout([FromQuery] string redirectUri)
     {
-        return SignOut(new AuthenticationProperties { RedirectUri = "/" },
-            CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
+        return SignOut(new AuthenticationProperties { RedirectUri = redirectUri },
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            OpenIdConnectDefaults.AuthenticationScheme);
     }
 }

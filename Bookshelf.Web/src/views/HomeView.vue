@@ -14,13 +14,7 @@ import bookshelfApi from '../services/bookshelfApi';
 
 const router = useRouter();
 
-const logout = async () => {
-  try {
-    await bookshelfApi.logout();
-  }
-  catch (error) {
-    console.error('Logout failed:', error);
-  }
-  router.push('/login');
+const logout = () => {
+  window.location.href = bookshelfApi.getLogoutUrl(window.location.origin + '/');
 }
 </script>

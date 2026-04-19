@@ -16,11 +16,11 @@ public static class KeycloakHelper
             .WithClientType(KeycloakClientType.OpenIdConnect)
             .WithStandardFlow()
             .WithClientAuthentication()
-            .WithRedirectUris($"{url}/signin-oidc")
+            .WithRedirectUris($"{url}/signin-oidc", $"{url}/signout-oidc")
             .WithWebOrigins($"{url}", ui.GetEndpoint().EndpointAnnotation.GetUrl())
             .WithClientSecret(BookshelfClientSecret);
 
-        var user = realm.AddUser("user", "user@example.com", "User", "user", "user");
+        var user = realm.AddUser("user", "user@example.com", "User", "user", "user", "c386e18e-1cd8-4765-9f40-43ca7f4bb24c");
     }
 
     public static void AddKeycloakEnvironment(IResourceBuilder<KeycloakResource> keycloak,

@@ -15,17 +15,8 @@ class BookshelfApi {
     }
   }
 
-  async logout() {
-    try {
-      const result = await apiClient.post('/user/logout');
-      this._user.value = null;
-      return result;
-    }
-    catch (error) {
-      console.error('Logout failed:', error);
-      this._user.value = null;
-      return false;
-    }
+  getLogoutUrl(redirectUri) {
+    return `${apiClient.baseUrl}/user/logout?redirectUri=${encodeURIComponent(redirectUri)}`;
   }
 
   getLoginUrl(redirectUri) {
