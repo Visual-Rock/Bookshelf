@@ -13,6 +13,25 @@ public static class HostApplicationBuilderExtensions
         return builder;
     }
 
+    public static void AddBookshelfCors(this IHostApplicationBuilder builder)
+    {
+        var allowedOrigins =
+            (builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string>() ?? string.Empty).Split(',',
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.WithOrigins(allowedOrigins)
+                    .AllowCredentials()
+                    .AllowAnyHeader()
+                    .WithMethods("GET", "POST", "PUT", "DELETE", "HEAD")
+                    .WithExposedHeaders("Content-Range", "Content-Length", "Accept-Ranges", "Content-Disposition");
+            });
+        });
+    }
+
     public static IHostApplicationBuilder AddBookshelfAuthentication(this IHostApplicationBuilder builder)
     {
         var config = builder.Configuration.GetSection("Authentication");

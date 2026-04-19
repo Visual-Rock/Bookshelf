@@ -1,4 +1,3 @@
-using Aspire.Hosting.JavaScript;
 using Aurora.AppHost.Extensions;
 using Bookshelf.Extensions;
 using Bookshelf.Helper;
@@ -13,12 +12,14 @@ var api = builder.AddProject<Bookshelf_Api>("bookshelf-api")
     .WithApiReference()
     .WaitForCompletion(dbMigrator).WithReference(db);
 
-builder.AddViteApp("bookshelf-web", "../Bookshelf.Web")
+var web = builder.AddViteApp("bookshelf-web", "../Bookshelf.Web")
     .WithReference(api)
     .WithExternalHttpEndpoints()
     .PublishAsDockerFile();
 
 KeycloakHelper.ConfigureKeycloak(keycloak, api);
 KeycloakHelper.AddKeycloakEnvironment(keycloak, api);
+
+api.WithEnvironment("Cors:AllowedOrigins", web.GetEndpoint().EndpointAnnotation.GetUrl());
 
 builder.Build().Run();

@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddNpgsqlDbContext<BookshelfContext>("bookshelf");
 builder.AddBookshelfAuthentication();
 builder.AddBookshelfServices();
+builder.AddBookshelfCors();
 builder.Services.AddControllers();
 
 builder.Services.AddOpenApi();
