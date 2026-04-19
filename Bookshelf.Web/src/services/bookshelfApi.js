@@ -5,6 +5,11 @@ class BookshelfApi {
   constructor() {
     this._user = ref(null);
   }
+
+  get user() {
+    return this._user.value;
+  }
+
   async isAuthenticated() {
     try {
       this._user.value = await apiClient.get('/user/info');

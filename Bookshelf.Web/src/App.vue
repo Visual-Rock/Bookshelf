@@ -1,5 +1,16 @@
 <template>
-  <div class="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
+  <component :is="layout">
     <router-view />
-  </div>
+  </component>
 </template>
+
+<script setup>
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+import MainLayout from './components/MainLayout.vue';
+
+const route = useRoute();
+const layout = computed(() => {
+  return route.name === 'login' ? 'div' : MainLayout;
+});
+</script>
