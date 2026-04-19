@@ -1,19 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Worker">
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-Bookshelf.MigrationService-fbf63411-87ef-4b81-a4bf-461b51fa9003</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.4"/>
-        <PackageReference Include="Scalar.AspNetCore" Version="2.11.8"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.4"/>
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Bookshelf.DataAccess\Bookshelf.DataAccess.csproj" />
-      <ProjectReference Include="..\Bookshelf.ServiceDefaults\Bookshelf.ServiceDefaults.csproj" />
     </ItemGroup>
-
 </Project>

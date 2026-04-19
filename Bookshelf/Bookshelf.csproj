@@ -10,6 +10,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Bookshelf.Api\Bookshelf.Api.csproj" />
+      <ProjectReference Include="..\Bookshelf.MigrationService\Bookshelf.MigrationService.csproj" />
     </ItemGroup>
 
     <ItemGroup>

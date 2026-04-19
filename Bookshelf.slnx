@@ -1,5 +1,8 @@
 <Solution>
   <Project Path="Bookshelf.Api/Bookshelf.Api.csproj" />
+  <Project Path="Bookshelf.DataAccess/Bookshelf.DataAccess.csproj" />
+  <Project Path="Bookshelf.DataModel/Bookshelf.DataModel.csproj" />
+  <Project Path="Bookshelf.MigrationService/Bookshelf.MigrationService.csproj" />
   <Project Path="Bookshelf.ServiceDefaults/Bookshelf.ServiceDefaults.csproj" />
   <Project Path="Bookshelf/Bookshelf.csproj" />
 </Solution>

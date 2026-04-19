@@ -1,8 +1,11 @@
+using Projects;
+
 namespace Bookshelf.Extensions;
 
 public static class DistributedApplicationBuilder
 {
-    public static (IResourceBuilder<PostgresServerResource> server, IResourceBuilder<PostgresDatabaseResource> db)
+    public static (IResourceBuilder<PostgresServerResource> server, IResourceBuilder<PostgresDatabaseResource> db,
+        IResourceBuilder<ProjectResource>)
         AddBookshelfDatabase(this IDistributedApplicationBuilder builder)
     {
         var username = builder.AddParameter("database-username", "postgres");
@@ -14,7 +17,11 @@ public static class DistributedApplicationBuilder
         password.WithParentRelationship(postgres);
 
         var db = postgres.AddDatabase("bookshelf", "bookshelf");
-        
-        return (postgres, db);
+
+        var migrationService = builder.AddProject<Bookshelf_MigrationService>("bookshelf-migration-service")
+            .WaitFor(db)
+            .WithReference(db);
+
+        return (postgres, db, migrationService);
     }
 }

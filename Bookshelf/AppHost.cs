@@ -4,10 +4,10 @@ using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-var (_, db) = builder.AddBookshelfDatabase();
+var (_, db, dbMigrator) = builder.AddBookshelfDatabase();
 
 var api = builder.AddProject<Bookshelf_Api>("bookshelf-api")
     .WithApiReference()
-    .WithReference(db);
+    .WaitForCompletion(dbMigrator).WithReference(db);
 
 builder.Build().Run();
