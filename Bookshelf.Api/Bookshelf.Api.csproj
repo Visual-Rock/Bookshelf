@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
@@ -15,6 +15,12 @@
     <ItemGroup>
         <ProjectReference Include="..\Bookshelf.DataAccess\Bookshelf.DataAccess.csproj"/>
         <ProjectReference Include="..\Bookshelf.ServiceDefaults\Bookshelf.ServiceDefaults.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="IsbnRanges.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

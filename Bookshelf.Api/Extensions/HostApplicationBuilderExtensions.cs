@@ -12,6 +12,7 @@ public static class HostApplicationBuilderExtensions
     public static IHostApplicationBuilder AddBookshelfServices(this IHostApplicationBuilder builder)
     {
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IIsbnService, IsbnService>();
         return builder;
     }
 
