@@ -1,3 +1,5 @@
+using Bookshelf.Api.Extensions;
+using Bookshelf.Api.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -7,7 +9,7 @@ namespace Bookshelf.Api.Controllers;
 
 [ApiController]
 [Route("user")]
-public class UserController : ControllerBase
+public class UserController(IUserService userService) : ControllerBase
 {
     [HttpGet]
     [Route("login")]
@@ -21,15 +23,9 @@ public class UserController : ControllerBase
     [Route("info")]
     public IActionResult GetInfo()
     {
-        if (User.Identity?.IsAuthenticated == true)
-        {
-            var id = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            var username = User.Identity.Name;
-
-            return Ok(new { Id = id, Username = username });
-        }
-
-        return Unauthorized();
+        if (User.GetUser(userService) is not { } user)
+            return Unauthorized();
+        return Ok(new { user.Id, user.Username });
     }
 
     [HttpGet]
