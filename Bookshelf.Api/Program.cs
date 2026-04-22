@@ -4,6 +4,7 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
 builder.AddNpgsqlDbContext<BookshelfContext>("bookshelf");
 builder.AddBookshelfAuthentication();
 builder.AddBookshelfServices();

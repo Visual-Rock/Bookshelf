@@ -13,6 +13,8 @@ public static class HostApplicationBuilderExtensions
     {
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IIsbnService, IsbnService>();
+        builder.Services.AddScoped<IBookService, BookService>();
+        builder.Services.AddScoped<IGoogleApiService, GoogleApiService>();
         return builder;
     }
 
