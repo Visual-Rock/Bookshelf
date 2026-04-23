@@ -8,7 +8,7 @@ public interface IGoogleApiService
     Task<Book?> GetBookFromIsbn(string isbn, bool saveThumbnails = false);
 }
 
-public class GoogleApiService(IConfiguration configuration, IAuthorService authorService) : IGoogleApiService
+public class GoogleApiService(IConfiguration configuration, IAuthorService authorService, ICategoryService categoryService) : IGoogleApiService
 {
     private readonly HttpClient _client = new() { BaseAddress = new Uri("https://www.googleapis.com") };
     private readonly string? _apiKey = configuration["GoogleApi:ApiKey"];
@@ -37,6 +37,7 @@ public class GoogleApiService(IConfiguration configuration, IAuthorService autho
         var publishedDate = volumeInfo.GetProperty("publishedDate").GetString() ?? "0001-01-01";
 
         var authors = volumeInfo.GetProperty("authors").EnumerateArray().Select(a => authorService.GetOrCreate(a.GetString()!));
+        var categories = volumeInfo.GetProperty("categories").EnumerateArray().SelectMany(c => c.GetString()!.Split("/").Select(x => x.Trim()));
         
         var book = new Book
         {
@@ -48,7 +49,8 @@ public class GoogleApiService(IConfiguration configuration, IAuthorService autho
             ExternalId = id,
             Pages = pageCount,
             PublishDate = new DateTime(DateOnly.Parse(publishedDate), TimeOnly.MinValue, DateTimeKind.Utc),
-            Authors = authors.ToList()
+            Authors = authors.ToList(),
+            Categories = categories.Select(categoryService.GetOrCreate).ToList()
         };
 
         await DownloadImages(book.Id, volumeInfo.GetProperty("imageLinks"));
