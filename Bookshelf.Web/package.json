@@ -12,6 +12,7 @@
     "@fontsource/comfortaa": "^5.2.8",
     "@fontsource/material-icons": "^5.2.7",
     "@tailwindcss/vite": "^4.2.2",
+    "@zxing/library": "^0.21.3",
     "vue": "^3.5.32",
     "vue-router": "^4.6.4"
   },
