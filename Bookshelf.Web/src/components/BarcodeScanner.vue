@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col gap-4 p-4 bg-white dark:bg-zinc-900 rounded-xl shadow-lg border border-slate-200 dark:border-zinc-800 max-w-md mx-auto">
     <div class="flex p-1 bg-slate-100 dark:bg-zinc-800 rounded-lg">
-      <button @click="mode = 'camera'" type="button" :class="['flex-1 flex items-center justify-center gap-2 py-2 rounded-md transition-all duration-200', mode === 'camera' ? 'bg-white dark:bg-zinc-700 shadow-sm text-indigo-600 dark:text-indigo-300 font-medium' : 'text-slate-500 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-zinc-300']">
+      <button @click="mode = 'camera'" type="button" :class="['flex-1 flex items-center justify-center gap-2 py-2 rounded-md transition-all duration-200', mode === 'camera' ? 'bg-white dark:bg-zinc-700 shadow-sm text-primary-600 dark:text-primary-300 font-medium' : 'text-slate-500 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-zinc-300']">
         <span class="material-icons !text-lg">videocam</span>
         Camera
       </button>
-      <button @click="mode = 'file'" type="button" :class="['flex-1 flex items-center justify-center gap-2 py-2 rounded-md transition-all duration-200', mode === 'file' ? 'bg-white dark:bg-zinc-700 shadow-sm text-indigo-600 dark:text-indigo-300 font-medium' : 'text-slate-500 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-zinc-300']">
+      <button @click="mode = 'file'" type="button" :class="['flex-1 flex items-center justify-center gap-2 py-2 rounded-md transition-all duration-200', mode === 'file' ? 'bg-white dark:bg-zinc-700 shadow-sm text-primary-600 dark:text-primary-300 font-medium' : 'text-slate-500 dark:text-zinc-400 hover:text-slate-700 dark:hover:text-zinc-300']">
         <span class="material-icons !text-lg">image</span>
         File
       </button>
@@ -13,8 +13,8 @@
 
     <div v-show="mode === 'camera'" class="relative aspect-square bg-black rounded-lg overflow-hidden group">
       <video ref="videoRef" class="w-full h-full object-cover"></video>
-      <div class="absolute inset-0 border-2 border-indigo-500/30 pointer-events-none"></div>
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-indigo-500 rounded-lg pointer-events-none]">
+      <div class="absolute inset-0 border-2 border-primary-500/30 pointer-events-none"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border-2 border-primary-500 rounded-lg pointer-events-none]">
         <div class="absolute top-0 left-0 w-4 h-4 border-t-4 border-l-4 border-white -translate-x-1 -translate-y-1"></div>
         <div class="absolute top-0 right-0 w-4 h-4 border-t-4 border-r-4 border-white translate-x-1 -translate-y-1"></div>
         <div class="absolute bottom-0 left-0 w-4 h-4 border-b-4 border-l-4 border-white -translate-x-1 translate-y-1"></div>
@@ -25,7 +25,7 @@
         <div class="text-white">
           <span class="material-icons text-red-400 text-4xl mb-2">error_outline</span>
           <p class="text-sm">{{ error }}</p>
-          <button @click="startScanning" type="button" class="mt-4 px-4 py-2 bg-indigo-600 rounded-lg text-xs font-medium hover:bg-indigo-700 transition-colors">
+          <button @click="startScanning" type="button" class="mt-4 px-4 py-2 bg-primary-600 rounded-lg text-xs font-medium hover:bg-primary-700 transition-colors">
             Try Again
           </button>
         </div>
@@ -33,11 +33,11 @@
     </div>
 
     <!-- File Input View -->
-    <div v-show="mode === 'file'" class="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-slate-300 dark:border-zinc-700 rounded-lg p-6 text-center transition-colors hover:border-indigo-400 dark:hover:border-indigo-500 cursor-pointer relative" @click="fileInputRef.click()">
+    <div v-show="mode === 'file'" class="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-slate-300 dark:border-zinc-700 rounded-lg p-6 text-center transition-colors hover:border-primary-400 dark:hover:border-primary-500 cursor-pointer relative" @click="fileInputRef.click()">
       <input ref="fileInputRef" type="file" accept="image/*" class="hidden" @change="handleFileChange"/>
       <div v-if="!previewImage" class="flex flex-col items-center">
-        <div class="w-16 h-16 rounded-full bg-indigo-50 dark:bg-indigo-950/30 flex items-center justify-center mb-4">
-          <span class="material-icons text-indigo-500 text-3xl">upload_file</span>
+        <div class="w-16 h-16 rounded-full bg-primary-50 dark:bg-primary-950/30 flex items-center justify-center mb-4">
+          <span class="material-icons text-primary-500 text-3xl">upload_file</span>
         </div>
         <p class="text-sm font-medium text-slate-700 dark:text-zinc-300">Click to upload or drag an image</p>
       </div>

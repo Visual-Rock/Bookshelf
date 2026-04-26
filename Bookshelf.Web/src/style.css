@@ -6,6 +6,17 @@
 
 @theme {
   --font-sans: "Comfortaa", "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --color-primary-50: #eefef4;
+  --color-primary-100: #d4fce4;
+  --color-primary-200: #acf9cd;
+  --color-primary-300: #75f1ac;
+  --color-primary-400: #47f58f;
+  --color-primary-500: #1be26d;
+  --color-primary-600: #0fba56;
+  --color-primary-700: #109248;
+  --color-primary-800: #12733d;
+  --color-primary-900: #115e34;
+  --color-primary-950: #04351b;
 }
 
 .material-icons {

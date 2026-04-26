@@ -8,8 +8,8 @@
             Manual ISBN Input
           </label>
           <div class="flex gap-2">
-            <input id="isbn" v-model="manualIsbn" type="text" placeholder="Enter ISBN..." class="min-w-0 flex-1 px-4 py-2 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white" @keyup.enter="fetchBook(manualIsbn)"/>
-            <button @click="fetchBook(manualIsbn)" class="shrink-0 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50" :disabled="loading">
+            <input id="isbn" v-model="manualIsbn" type="text" placeholder="Enter ISBN..." class="min-w-0 flex-1 px-4 py-2 bg-slate-50 dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none transition-all dark:text-white" @keyup.enter="fetchBook(manualIsbn)"/>
+            <button @click="fetchBook(manualIsbn)" class="shrink-0 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50" :disabled="loading">
               Search
             </button>
           </div>
@@ -53,7 +53,7 @@
             </div>
 
             <div class="mt-6 flex gap-3">
-              <button @click="addBook" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50" :disabled="adding">
+              <button @click="addBook" class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50" :disabled="adding">
                 <span v-if="adding" class="animate-spin material-icons !text-lg">sync</span>
                 <span v-else class="material-icons !text-lg">add_circle</span>
                 {{ adding ? 'Adding...' : 'Add to Collection' }}
@@ -68,7 +68,7 @@
 
       <div v-if="loading" class="fixed inset-0 bg-slate-900/20 backdrop-blur-[2px] z-[70] flex items-center justify-center">
         <div class="bg-white dark:bg-zinc-900 p-4 rounded-2xl shadow-xl flex items-center gap-3">
-          <span class="animate-spin material-icons text-indigo-600">sync</span>
+          <span class="animate-spin material-icons text-primary-600">sync</span>
           <span class="font-medium dark:text-zinc-200">Searching book...</span>
         </div>
       </div>
@@ -78,7 +78,7 @@
         {{ error }}
       </div>
       
-      <div v-if="success" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[80] bg-emerald-600 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2">
+      <div v-if="success" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[80] bg-primary-600 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2">
         <span class="material-icons">check_circle</span>
         {{ success }}
       </div>

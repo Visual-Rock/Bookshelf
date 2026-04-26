@@ -30,8 +30,8 @@
               </span>
             </button>
 
-            <div class="flex items-center gap-2 px-2.5 py-1 rounded-full text-sm font-medium border transition-colors duration-200 cursor-default select-none bg-indigo-50 border-indigo-200 text-indigo-700 dark:bg-indigo-950/60 dark:border-indigo-800 dark:text-indigo-300">
-              <span class="flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold bg-indigo-500 text-white dark:bg-indigo-600">
+            <div class="flex items-center gap-2 px-2.5 py-1 rounded-full text-sm font-medium border transition-colors duration-200 cursor-default select-none bg-primary-50 border-primary-200 text-primary-700 dark:bg-primary-950/60 dark:border-primary-800 dark:text-primary-300">
+              <span class="flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold bg-primary-500 text-white dark:bg-primary-600">
                 {{ userInitials }}
               </span>
               <span class="hidden sm:inline max-w-[120px] truncate">{{ username }}</span>
