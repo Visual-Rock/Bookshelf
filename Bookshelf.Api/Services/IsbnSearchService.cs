@@ -66,8 +66,7 @@ public class IsbnSearchService(IConfiguration configuration, IAuthorService auth
 
     private string? GetValue(HtmlNode? node, string label)
     {
-        if (node == null) return null;
-        var p = node.SelectSingleNode($".//p[strong[contains(text(), '{label}:')]]");
+        var p = node?.SelectSingleNode($".//p[strong[contains(text(), '{label}:')]]");
         if (p == null) return null;
 
         var text = p.InnerText;
