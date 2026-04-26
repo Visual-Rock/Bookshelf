@@ -17,6 +17,7 @@ public static class HostApplicationBuilderExtensions
         builder.Services.AddScoped<IAuthorService, AuthorService>();
         builder.Services.AddScoped<ICategoryService, CategoryService>();
         builder.Services.AddScoped<IPublisherService, PublisherService>();
+        builder.Services.AddScoped<IBookCoverService, BookCoverService>();
         
         if (builder.Configuration["GoogleApi:ApiKey"] is not null)
             builder.Services.AddScoped<IExternalBookService, GoogleApiService>();
