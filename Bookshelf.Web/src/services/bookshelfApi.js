@@ -35,6 +35,10 @@ class BookshelfApi {
   addBook(isbn) {
     return apiClient.post('/book/add', { isbn: isbn });
   }
+
+  listBook() {
+    return apiClient.get('/book/list');
+  }
   
   getCoverUrl(bookId) {
     return `${apiClient.baseUrl}/book/${bookId}/cover`;
