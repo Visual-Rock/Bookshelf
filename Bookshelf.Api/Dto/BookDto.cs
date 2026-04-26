@@ -9,7 +9,7 @@ public class BookDto
     public string Description { get; set; } = string.Empty;
     public string Isbn { get; set; } = string.Empty;
     public DateTime PublishDate { get; set; }
-    public string? PublisherId { get; set; }
+    public string? Publisher { get; set; }
     public int Pages { get; set; }
     public string Language { get; set; } = string.Empty;
 
@@ -21,14 +21,14 @@ internal static class BookDtoExtensions
 {
     public static BookDto ToDto(this Book book)
     {
-        return new BookDto()
+        return new BookDto
         {
             Id = book.Id,
             Title = book.Title,
             Description = book.Description,
             Isbn = book.Isbn,
             PublishDate = book.PublishDate,
-            PublisherId = book.PublisherId?.ToString(),
+            Publisher = book.Publisher?.Name,
             Pages = book.Pages,
             Language = book.Language,
             Authors = book.Authors.Select(a => a.Name).ToArray(),

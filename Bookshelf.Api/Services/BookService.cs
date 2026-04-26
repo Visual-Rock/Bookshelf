@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Bookshelf.DataAccess;
 using Bookshelf.DataModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bookshelf.Api.Services;
 
@@ -21,7 +22,7 @@ public class BookService(BookshelfContext context, IServiceProvider serviceProvi
 
     public async Task<Book?> GetBookByIsbn(string isbn)
     {
-        var book = context.Books.FirstOrDefault(x => x.Isbn == isbn);
+        var book = context.Books.Include(b => b.Authors).Include(x => x.Categories).FirstOrDefault(x => x.Isbn == isbn);
         
         if (book is null)
         {

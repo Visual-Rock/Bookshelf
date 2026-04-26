@@ -3,7 +3,7 @@ using Bookshelf.DataModel;
 
 namespace Bookshelf.Api.Services;
 
-public class GoogleApiService(IConfiguration configuration, IAuthorService authorService, ICategoryService categoryService, IPublisherService publisherService) : IExternalBookService
+public class GoogleApiService(IConfiguration configuration, IAuthorService authorService, ICategoryService categoryService, IPublisherService publisherService, IBookCoverService bookCoverService) : IExternalBookService
 {
     private readonly HttpClient _client = new() { BaseAddress = new Uri("https://www.googleapis.com") };
     private readonly string? _apiKey = configuration["GoogleApi:ApiKey"];
@@ -57,26 +57,13 @@ public class GoogleApiService(IConfiguration configuration, IAuthorService autho
 
     private async Task DownloadImages(Guid bookId, JsonElement links)
     {
-        var thumbnailLink = links.GetProperty("thumbnail").GetString() ?? string.Empty;
-        var extraLargeLink = links.GetProperty("extraLarge").GetString() ?? string.Empty;
+        (string? Url, bool IsThumbnail)[] urls = [(links.GetProperty("thumbnail").GetString(), true), (links.GetProperty("extraLarge").GetString(), false)];
 
         var baseDir = Path.Join(_imageDirectory, bookId.ToString());
-
         if (!Directory.Exists(baseDir))
             Directory.CreateDirectory(baseDir);
 
-        await Task.WhenAll(Download(thumbnailLink, Path.Join(baseDir, "thumbnail.jpeg")), Download(extraLargeLink, Path.Join(baseDir, "cover.jpeg")));
-        
-        async Task Download(string? url, string path)
-        {
-            if (url is null)
-                return;
-
-            await using var data = await _client.GetStreamAsync(url);
-            await using var file = File.OpenWrite(path);
-            await data.CopyToAsync(file);
-            file.Close();
-        }
+        await Task.WhenAll(urls.Where(x => !string.IsNullOrEmpty(x.Url)).Select(x => bookCoverService.DownloadCover(bookId, x.Url!, x.IsThumbnail)));
     }
     
 

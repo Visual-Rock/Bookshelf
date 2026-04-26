@@ -3,7 +3,7 @@ using HtmlAgilityPack;
 
 namespace Bookshelf.Api.Services;
 
-public class IsbnSearchService(IConfiguration configuration, IAuthorService authorService, IPublisherService publisherService, HttpClient client) : IExternalBookService
+public class IsbnSearchService(IConfiguration configuration, IAuthorService authorService, IPublisherService publisherService, HttpClient client, IBookCoverService bookCoverService) : IExternalBookService
 {
     private readonly string _imageDirectory = configuration["Storage:ImageDirectory"] ?? "images";
 
@@ -45,8 +45,8 @@ public class IsbnSearchService(IConfiguration configuration, IAuthorService auth
         if (saveThumbnails)
         {
             var imageUrl = bookNode.SelectSingleNode(".//div[@class='image']/img")?.GetAttributeValue("src", "");
-            if (!string.IsNullOrEmpty(imageUrl)) 
-                await DownloadImage(bookId, imageUrl);
+            if (!string.IsNullOrEmpty(imageUrl))
+                await bookCoverService.DownloadCover(bookId, imageUrl, false);
         }
 
         return new Book
@@ -66,8 +66,7 @@ public class IsbnSearchService(IConfiguration configuration, IAuthorService auth
 
     private string? GetValue(HtmlNode? node, string label)
     {
-        if (node == null) return null;
-        var p = node.SelectSingleNode($".//p[strong[contains(text(), '{label}:')]]");
+        var p = node?.SelectSingleNode($".//p[strong[contains(text(), '{label}:')]]");
         if (p == null) return null;
 
         var text = p.InnerText;
