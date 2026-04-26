@@ -11,6 +11,14 @@ public record struct BookIsbnBody(string Isbn);
 [Route("book")]
 public class BookController(IUserService userService, IIsbnService isbnService, IBookService bookService, IBookCoverService bookCoverService) : ControllerBase
 {
+    [HttpGet("list")]
+    public IActionResult GetBooksForUser()
+    {
+        if (User.GetUser(userService) is not { } user)
+            return Unauthorized();
+        return Ok(bookService.GetBooksForUser(user).Select(x => x.ToDto(user)));
+    }
+    
     [HttpPost("add")]
     public async Task<IActionResult> AddBook([FromBody] BookIsbnBody body)
     {
@@ -30,7 +38,7 @@ public class BookController(IUserService userService, IIsbnService isbnService, 
     [HttpGet]
     public async Task<IActionResult> GetBookByIsbn([FromQuery(Name = "isbn")] string query)
     {
-        if (User.GetUser(userService) is null)
+        if (User.GetUser(userService) is not { } user)
             return Unauthorized();
 
         if (isbnService.FormatIsbn(query) is not { } isbn)
@@ -38,7 +46,7 @@ public class BookController(IUserService userService, IIsbnService isbnService, 
 
         if (await bookService.GetBookByIsbn(isbn) is not { } book)
             return NotFound();
-        return Ok(book.ToDto());
+        return Ok(book.ToDto(user));
     }
     
     [HttpGet("{id:guid}/cover")]

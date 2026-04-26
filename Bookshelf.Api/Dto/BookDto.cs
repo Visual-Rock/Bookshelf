@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Bookshelf.DataModel;
 
 namespace Bookshelf.Api.Dto;
@@ -12,6 +13,9 @@ public class BookDto
     public string? Publisher { get; set; }
     public int Pages { get; set; }
     public string Language { get; set; } = string.Empty;
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? Amount { get; set; }
 
     public string[] Authors { get; set; } = [];
     public string[] Categories { get; set; } = [];
@@ -36,4 +40,11 @@ internal static class BookDtoExtensions
         };
     }
     
+    public static BookDto ToDto(this Book book, User user)
+    {
+        var b = book.ToDto();
+        if (book.UserBookRelations.FirstOrDefault(x => x.UserId == user.Id) is { } relation)
+            b.Amount = relation.Count;
+        return b;
+    }
 }

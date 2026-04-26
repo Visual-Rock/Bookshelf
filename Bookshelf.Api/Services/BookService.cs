@@ -8,6 +8,7 @@ namespace Bookshelf.Api.Services;
 public interface IBookService
 {
     void AddBook(Book book);
+    IEnumerable<Book> GetBooksForUser(User user);
     Task<Book?> GetBookByIsbn(string isbn);
     void AddOrIncrementBookForUser(Book book, User user);
 }
@@ -20,9 +21,14 @@ public class BookService(BookshelfContext context, IServiceProvider serviceProvi
         context.SaveChanges();
     }
 
+    public IEnumerable<Book> GetBooksForUser(User user)
+    {
+        return context.Books.Include(b => b.UserBookRelations).Include(b => b.Authors).Include(x => x.Categories).Where(x => x.UserBookRelations.Any(y => y.UserId == user.Id));
+    }
+
     public async Task<Book?> GetBookByIsbn(string isbn)
     {
-        var book = context.Books.Include(b => b.Authors).Include(x => x.Categories).FirstOrDefault(x => x.Isbn == isbn);
+        var book = context.Books.Include(b => b.UserBookRelations).Include(b => b.Authors).Include(x => x.Categories).FirstOrDefault(x => x.Isbn == isbn);
         
         if (book is null)
         {
