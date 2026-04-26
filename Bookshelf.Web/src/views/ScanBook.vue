@@ -131,7 +131,7 @@ async function addBook() {
   error.value = null;
   
   try {
-    await apiClient.post('/book/add', { isbn: book.value.isbn });
+    await bookshelfApi.addBook(book.value.isbn);
     showSuccess('Book added to collection!');
     book.value = null;
     manualIsbn.value = '';

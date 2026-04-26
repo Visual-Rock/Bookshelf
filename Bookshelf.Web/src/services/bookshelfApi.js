@@ -32,6 +32,10 @@ class BookshelfApi {
     return `${apiClient.baseUrl}/user/login?redirectUri=${encodeURIComponent(redirectUri)}`;
   }
   
+  addBook(isbn) {
+    return apiClient.post('/book/add', { isbn: isbn });
+  }
+  
   getCoverUrl(bookId) {
     return `${apiClient.baseUrl}/book/${bookId}/cover`;
   }
