@@ -7,11 +7,11 @@ namespace Bookshelf.Api.Services;
 public interface IBookService
 {
     void AddBook(Book book);
-    bool TryGetBookByIsbn(string isbn, [NotNullWhen(true)] out Book? book);
+    Task<Book?> GetBookByIsbn(string isbn);
     void AddOrIncrementBookForUser(Book book, User user);
 }
 
-public class BookService(BookshelfContext context) : IBookService
+public class BookService(BookshelfContext context, IServiceProvider serviceProvider) : IBookService
 {
     public void AddBook(Book book)
     {
@@ -19,10 +19,27 @@ public class BookService(BookshelfContext context) : IBookService
         context.SaveChanges();
     }
 
-    public bool TryGetBookByIsbn(string isbn, [NotNullWhen(true)] out Book? book)
+    public async Task<Book?> GetBookByIsbn(string isbn)
     {
-        book = context.Books.FirstOrDefault(x => x.Isbn == isbn);
-        return book is not null;
+        var book = context.Books.FirstOrDefault(x => x.Isbn == isbn);
+        
+        if (book is null)
+        {
+            var external = serviceProvider.GetServices<IExternalBookService>();
+
+            foreach (var service in external)
+            {
+                book = await service.GetBookFromIsbn(isbn, true);
+                if (book is not null)
+                {
+                    context.Books.Add(book);
+                    await context.SaveChangesAsync();
+                    break;
+                }
+            }
+        }
+        
+        return book;
     }
 
     public void AddOrIncrementBookForUser(Book book, User user)

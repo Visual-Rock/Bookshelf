@@ -9,7 +9,7 @@ public record struct BookIsbnBody(string Isbn);
 
 [ApiController]
 [Route("book")]
-public class BookController(IUserService userService, IIsbnService isbnService, IBookService bookService, IGoogleApiService googleApiService) : ControllerBase
+public class BookController(IUserService userService, IIsbnService isbnService, IBookService bookService) : ControllerBase
 {
     [HttpPost("add")]
     public async Task<IActionResult> AddBook([FromBody] BookIsbnBody body)
@@ -20,14 +20,8 @@ public class BookController(IUserService userService, IIsbnService isbnService, 
         if (isbnService.FormatIsbn(body.Isbn) is not { } isbn)
             return BadRequest();
 
-        if (!bookService.TryGetBookByIsbn(isbn, out var book))
-        {
-            book = await googleApiService.GetBookFromIsbn(isbn, true);
-
-            if (book is null)
-                return NotFound("book could not be found");
-            bookService.AddBook(book);
-        }
+        if (await bookService.GetBookByIsbn(isbn) is not { } book)
+            return NotFound();
         
         bookService.AddOrIncrementBookForUser(book, user);
         return NoContent();
@@ -36,21 +30,14 @@ public class BookController(IUserService userService, IIsbnService isbnService, 
     [HttpGet]
     public async Task<IActionResult> GetBookByIsbn([FromQuery(Name = "isbn")] string query)
     {
-        if (User.GetUser(userService) is not { } user)
+        if (User.GetUser(userService) is null)
             return Unauthorized();
 
         if (isbnService.FormatIsbn(query) is not { } isbn)
             return BadRequest();
 
-        if (!bookService.TryGetBookByIsbn(isbn, out var book))
-        {
-            book = await googleApiService.GetBookFromIsbn(isbn, true);
-
-            if (book is null)
-                return NotFound("book could not be found");
-            bookService.AddBook(book);
-        }
-        
+        if (await bookService.GetBookByIsbn(isbn) is not { } book)
+            return NotFound();
         return Ok(book.ToDto());
     }
 }
