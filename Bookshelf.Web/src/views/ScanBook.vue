@@ -27,9 +27,8 @@
             </div>
 
             <div class="flex gap-6">
-              <div class="w-24 h-36 bg-slate-100 dark:bg-zinc-800 rounded-lg flex flex-col items-center justify-center border-2 border-dashed border-slate-200 dark:border-zinc-700 shrink-0">
-                <span class="material-icons text-slate-300 dark:text-zinc-600 text-3xl mb-1">book</span>
-                <span class="text-[10px] text-slate-400 dark:text-zinc-500 font-medium">NO COVER</span>
+              <div class="w-24 h-36 bg-slate-100 dark:bg-zinc-800 rounded-lg flex flex-col items-center justify-center shrink-0">
+                <img :src="bookshelfApi.getThumbnailUrl(book.id)">
               </div>
 
               <div class="flex-1 min-w-0">
@@ -90,7 +89,7 @@
 import { ref } from 'vue';
 import MainLayout from '../components/MainLayout.vue';
 import BarcodeScanner from '../components/BarcodeScanner.vue';
-import { apiClient } from '../services/apiClient';
+import bookshelfApi from '../services/bookshelfApi.js';
 
 const manualIsbn = ref('');
 const book = ref(null);
@@ -111,7 +110,7 @@ async function fetchBook(isbn) {
   book.value = null;
   
   try {
-    const data = await apiClient.get(`/book?isbn=${encodeURIComponent(isbn)}`);
+    const data = await bookshelfApi.getBookByIsbn(isbn);
     if (data) {
       book.value = data;
     } else {

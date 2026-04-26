@@ -19,6 +19,10 @@ class BookshelfApi {
       return false;
     }
   }
+  
+  getBookByIsbn(isbn) {
+    return apiClient.get(`/book?isbn=${encodeURIComponent(isbn)}`);
+  }
 
   getLogoutUrl(redirectUri) {
     return `${apiClient.baseUrl}/user/logout?redirectUri=${encodeURIComponent(redirectUri)}`;
@@ -26,6 +30,14 @@ class BookshelfApi {
 
   getLoginUrl(redirectUri) {
     return `${apiClient.baseUrl}/user/login?redirectUri=${encodeURIComponent(redirectUri)}`;
+  }
+  
+  getCoverUrl(bookId) {
+    return `${apiClient.baseUrl}/book/${bookId}/cover`;
+  }
+
+  getThumbnailUrl(bookId) {
+    return `${apiClient.baseUrl}/book/${bookId}/thumbnail`;
   }
 }
 
