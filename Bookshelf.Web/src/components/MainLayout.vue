@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ dark: isDark }">
+  <div>
     <div class="min-h-screen flex flex-col transition-colors duration-300 bg-slate-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
 
       <header class="sticky top-0 z-50 border-b transition-colors duration-300 bg-white/80 border-slate-200 backdrop-blur-md dark:bg-zinc-900/80 dark:border-zinc-800">
@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import bookshelfApi from '../services/bookshelfApi';
 import SearchBar from './SearchBar.vue';
@@ -73,8 +73,17 @@ const props = defineProps({
 
 const router = useRouter();
 const username = computed(() => bookshelfApi.user?.username ?? bookshelfApi.user?.Username ?? '')
-const isDark = ref(props.defaultDark)
+const isDark = ref(document.documentElement.classList.contains('dark'))
 const searchQuery = ref('')
+
+watch(isDark, (newValue) => {
+  localStorage.setItem('theme', newValue ? 'dark' : 'light');
+  if (newValue) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+});
 
 function onSearch() {
   console.log('Searching for:', searchQuery.value);
