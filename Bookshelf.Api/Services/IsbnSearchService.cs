@@ -44,7 +44,7 @@ public class IsbnSearchService(IConfiguration configuration, IAuthorService auth
 
         if (saveThumbnails)
         {
-            var imageUrl = bookNode.SelectSingleNode(".//div[@class='image']/img")?.GetAttributeValue("src", null);
+            var imageUrl = bookNode.SelectSingleNode(".//div[@class='image']/img")?.GetAttributeValue("src", "");
             if (!string.IsNullOrEmpty(imageUrl)) 
                 await DownloadImage(bookId, imageUrl);
         }
