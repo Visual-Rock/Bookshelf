@@ -20,6 +20,8 @@ public static class HostApplicationBuilderExtensions
         
         if (builder.Configuration["GoogleApi:ApiKey"] is not null)
             builder.Services.AddScoped<IExternalBookService, GoogleApiService>();
+        builder.Services.AddHttpClient<IExternalBookService, IsbnSearchService>();
+        
         return builder;
     }
 
