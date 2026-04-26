@@ -1,25 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import HomeView from '../views/HomeView.vue';
-import LoginView from '../views/LoginView.vue';
 import bookshelfApi from '../services/bookshelfApi';
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView,
-    beforeEnter: async (to, from, next) => {
-      if (!(await bookshelfApi.isAuthenticated())) {
-        next('/login');
-      } else {
-        next();
-      }
-    }
+    component: () => import('../views/HomeView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/scan',
+    name: 'scan',
+    component: () => import('../views/ScanBook.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: '/login',
     name: 'login',
-    component: LoginView
+    component: () => import('../views/LoginView.vue')
   },
   {
     path: '/:pathMatch(.*)*',
@@ -30,6 +28,16 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes
+});
+
+router.beforeEach(async (to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  
+  if (requiresAuth && !(await bookshelfApi.isAuthenticated())) {
+    next('/login');
+  } else {
+    next();
+  }
 });
 
 export default router;

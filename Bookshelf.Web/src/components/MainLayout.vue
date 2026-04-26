@@ -81,6 +81,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import bookshelfApi from '../services/bookshelfApi';
 import SearchBar from './SearchBar.vue';
 
@@ -91,6 +92,7 @@ const props = defineProps({
   },
 })
 
+const router = useRouter();
 const username = computed(() => bookshelfApi.user?.username ?? bookshelfApi.user?.Username ?? '')
 const isDark = ref(props.defaultDark)
 const searchQuery = ref('')
@@ -100,11 +102,11 @@ function onSearch() {
 }
 
 function addBookWithCamera() {
-  console.log('Adding book');
+  router.push('/scan');
 }
 
 function checkBookInCollectionWithCamera() {
-  console.log('Checking book');
+  router.push('/scan');
 }
 
 function onLogout() {
