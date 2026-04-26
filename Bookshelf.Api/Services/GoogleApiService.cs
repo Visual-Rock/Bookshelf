@@ -3,7 +3,7 @@ using Bookshelf.DataModel;
 
 namespace Bookshelf.Api.Services;
 
-public class GoogleApiService(IConfiguration configuration, IAuthorService authorService, ICategoryService categoryService) : IExternalBookService
+public class GoogleApiService(IConfiguration configuration, IAuthorService authorService, ICategoryService categoryService, IPublisherService publisherService) : IExternalBookService
 {
     private readonly HttpClient _client = new() { BaseAddress = new Uri("https://www.googleapis.com") };
     private readonly string? _apiKey = configuration["GoogleApi:ApiKey"];
@@ -30,6 +30,7 @@ public class GoogleApiService(IConfiguration configuration, IAuthorService autho
         var language = volumeInfo.GetProperty("language").GetString() ?? string.Empty;
         var pageCount = volumeInfo.GetProperty("pageCount").GetInt32();
         var publishedDate = volumeInfo.GetProperty("publishedDate").GetString() ?? "0001-01-01";
+        var publisher = volumeInfo.GetProperty("publisher").GetString();
 
         var authors = volumeInfo.GetProperty("authors").EnumerateArray().Select(a => authorService.GetOrCreate(a.GetString()!));
         var categories = volumeInfo.GetProperty("categories").EnumerateArray().SelectMany(c => c.GetString()!.Split("/").Select(x => x.Trim()));
@@ -43,6 +44,7 @@ public class GoogleApiService(IConfiguration configuration, IAuthorService autho
             Language = language,
             ExternalId = id,
             Pages = pageCount,
+            Publisher = publisher is not null ? publisherService.GetOrCreate(publisher) : null,
             PublishDate = new DateTime(DateOnly.Parse(publishedDate), TimeOnly.MinValue, DateTimeKind.Utc),
             Authors = authors.ToList(),
             Categories = categories.Select(categoryService.GetOrCreate).ToList()
