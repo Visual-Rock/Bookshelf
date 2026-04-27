@@ -8,6 +8,9 @@
       <div v-for="book in books" :key="book.id" class="book-card">
         <div class="book-cover">
           <img :src="bookshelfApi.getThumbnailUrl(book.id)" :alt="book.title" />
+            <div v-if="book.amount > 1" class="absolute top-2 right-2 flex items-center justify-center min-w-[1.5rem] h-6 px-1.5 rounded-full bg-primary-600 text-white text-xs font-bold">
+                {{ book.amount }}
+            </div>
         </div>
         <div class="mt-3 text-center">
           <h3 class="text-sm font-semibold text-slate-900 dark:text-zinc-100 line-clamp-2 min-h-[2.5rem]" :title="book.title">
