@@ -5,8 +5,6 @@ namespace Bookshelf.Api.Services;
 
 public class IsbnSearchService(IConfiguration configuration, IAuthorService authorService, IPublisherService publisherService, HttpClient client, IBookCoverService bookCoverService) : IExternalBookService
 {
-    private readonly string _imageDirectory = configuration["Storage:ImageDirectory"] ?? "images";
-
     public async Task<Book?> GetBookFromIsbn(string isbn, bool saveThumbnails = false)
     {
         var url = $"https://isbnsearch.org/isbn/{isbn.Replace("-", "")}";
@@ -74,25 +72,5 @@ public class IsbnSearchService(IConfiguration configuration, IAuthorService auth
         if (labelIndex == -1) return null;
 
         return HtmlEntity.DeEntitize(text[(labelIndex + label.Length + 1)..]).Trim();
-    }
-
-    private async Task DownloadImage(Guid bookId, string url)
-    {
-        var baseDir = Path.Join(_imageDirectory, bookId.ToString());
-
-        if (!Directory.Exists(baseDir))
-            Directory.CreateDirectory(baseDir);
-
-        var path = Path.Join(baseDir, "cover.jpeg");
-        try
-        {
-            await using var data = await client.GetStreamAsync(url);
-            await using var file = File.OpenWrite(path);
-            await data.CopyToAsync(file);
-        }
-        catch
-        {
-            // Ignore download errors
-        }
     }
 }
