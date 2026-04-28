@@ -8,9 +8,11 @@ namespace Bookshelf.Api.Services;
 public interface IBookService
 {
     void AddBook(Book book);
+    Book? GetBook(Guid id);
     IEnumerable<Book> GetBooksForUser(User user);
     Task<Book?> GetBookByIsbn(string isbn);
     void AddOrIncrementBookForUser(Book book, User user);
+    void RemoveBooksForUser(Book book, User user, int amount);
 }
 
 public class BookService(BookshelfContext context, IServiceProvider serviceProvider) : IBookService
@@ -19,6 +21,11 @@ public class BookService(BookshelfContext context, IServiceProvider serviceProvi
     {
         context.Add(book);
         context.SaveChanges();
+    }
+
+    public Book? GetBook(Guid id)
+    {
+        return context.Books.FirstOrDefault(x => x.Id == id);
     }
 
     public IEnumerable<Book> GetBooksForUser(User user)
@@ -59,6 +66,17 @@ public class BookService(BookshelfContext context, IServiceProvider serviceProvi
         }
         
         relation.Count += 1;
+        context.SaveChanges();
+    }
+    
+    public void RemoveBooksForUser(Book book, User user, int amount)
+    {
+        var relation = context.UserBookRelations.FirstOrDefault(x => x.BookId == book.Id && x.UserId == user.Id);
+        if (relation is null) return;
+        
+        relation.Count -= amount;
+        if (relation.Count <= 0)
+            context.UserBookRelations.Remove(relation);
         context.SaveChanges();
     }
 }

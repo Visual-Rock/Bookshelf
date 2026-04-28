@@ -35,6 +35,17 @@ public class BookController(IUserService userService, IIsbnService isbnService, 
         return NoContent();
     }
     
+    [HttpPost("remove/{id:guid}")]
+    public IActionResult RemoveBook(Guid id, [FromQuery] int amount = 1)
+    {
+        if (User.GetUser(userService) is not { } user)
+            return Unauthorized();
+        if (bookService.GetBook(id) is not { } book)
+            return NotFound();
+        bookService.RemoveBooksForUser(book, user, amount);
+        return NoContent();
+    }
+    
     [HttpGet]
     public async Task<IActionResult> GetBookByIsbn([FromQuery(Name = "isbn")] string query)
     {

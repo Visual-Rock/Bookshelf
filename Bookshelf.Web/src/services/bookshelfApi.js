@@ -36,6 +36,10 @@ class BookshelfApi {
     return apiClient.post('/book/add', { isbn: isbn });
   }
 
+  removeBook(id, amount) {
+    return apiClient.post(`/book/remove/${id}?amount=${amount}`);
+  }
+
   listBook() {
     return apiClient.get('/book/list');
   }
