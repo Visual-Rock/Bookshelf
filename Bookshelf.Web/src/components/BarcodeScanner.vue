@@ -32,7 +32,6 @@
       </div>
     </div>
 
-    <!-- File Input View -->
     <div v-show="mode === 'file'" class="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-slate-300 dark:border-zinc-700 rounded-lg p-6 text-center transition-colors hover:border-primary-400 dark:hover:border-primary-500 cursor-pointer relative" @click="fileInputRef.click()">
       <input ref="fileInputRef" type="file" accept="image/*" class="hidden" @change="handleFileChange"/>
       <div v-if="!previewImage" class="flex flex-col items-center">

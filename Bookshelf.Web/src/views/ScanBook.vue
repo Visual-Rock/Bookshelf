@@ -20,7 +20,12 @@
         <div v-if="book" class="fixed inset-x-0 bottom-0 z-[60] bg-white dark:bg-zinc-900 border-t border-slate-200 dark:border-zinc-800 shadow-2xl p-6 pb-8 sm:pb-6 rounded-t-3xl">
           <div class="max-w-2xl mx-auto">
             <div class="flex justify-between items-start mb-4">
-              <h2 class="text-xl font-bold text-slate-900 dark:text-zinc-100">{{ book.title }}</h2>
+              <h2 class="flex items-center text-xl font-bold text-slate-900 dark:text-zinc-100">
+                {{ book.title }}
+                <span class="material-icons p-1" :class="book.amount >= 1 ? 'text-green-500' : 'text-red-500'">
+                  {{ book.amount >= 1 ? 'check_circle' : 'cancel' }}
+                </span> 
+              </h2>
               <button @click="book = null" class="text-slate-400 hover:text-slate-600 dark:hover:text-zinc-300">
                 <span class="material-icons">close</span>
               </button>
