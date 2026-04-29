@@ -5,7 +5,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: () => import('../views/HomeView.vue'),
+    component: () => import('../views/LibraryView.vue'),
     meta: { requiresAuth: true }
   },
   {
@@ -18,6 +18,12 @@ const routes = [
     path: '/libraries',
     name: 'libraries',
     component: () => import('../views/LibrariesList.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/library/:userId',
+    name: 'user library',
+    component: () => import('../views/LibraryView.vue'),
     meta: { requiresAuth: true }
   },
   {

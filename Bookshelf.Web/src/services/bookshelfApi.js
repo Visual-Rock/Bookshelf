@@ -44,8 +44,9 @@ class BookshelfApi {
     return apiClient.post(`/book/remove/${id}?amount=${amount}`);
   }
 
-  listBook() {
-    return apiClient.get('/book/list');
+  listBooks(userId = null) {
+    let query = userId ? `?userId=${userId}` : ""; 
+    return apiClient.get(`/library/list${query}`);
   }
   
   getCoverUrl(bookId) {
