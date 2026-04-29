@@ -30,7 +30,7 @@ public class BookService(BookshelfContext context, IServiceProvider serviceProvi
 
     public IEnumerable<Book> GetBooksForUser(User user)
     {
-        return context.Books.Include(b => b.UserBookRelations).Include(b => b.Authors).Include(x => x.Categories).Where(x => x.UserBookRelations.Any(y => y.UserId == user.Id));
+        return context.Books.Include(b => b.Authors).Include(x => x.Categories).Include(b => b.UserBookRelations).ThenInclude(r => r.User).Where(x => x.UserBookRelations.Any(y => y.UserId == user.Id));
     }
 
     public async Task<Book?> GetBookByIsbn(string isbn)

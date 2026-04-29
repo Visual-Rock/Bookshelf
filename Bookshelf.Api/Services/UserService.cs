@@ -7,6 +7,7 @@ namespace Bookshelf.Api.Services;
 public interface IUserService
 {
     User? GetUser(string externalReference);
+    User? GetUser(Guid id);
     Task<User> GetOrCreateUserAsync(string username, string externalReference);
     bool UpdateUserSettings(User user, bool hasPublicLibrary);
 }
@@ -14,6 +15,7 @@ public interface IUserService
 public class UserService(BookshelfContext context) : IUserService
 {
     public User? GetUser(string externalReference) => context.Users.FirstOrDefault(u => u.ExternalReference == externalReference);
+    public User? GetUser(Guid id) => context.Users.FirstOrDefault(u => u.Id == id);
 
     public async Task<User> GetOrCreateUserAsync(string username, string externalReference)
     {
