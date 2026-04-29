@@ -5,12 +5,12 @@
       <header class="sticky top-0 z-50 border-b transition-colors duration-300 bg-white/80 border-slate-200 backdrop-blur-md dark:bg-zinc-900/80 dark:border-zinc-800">
         <div class="flex items-center gap-3 px-4 h-14">
           <div class="flex items-center gap-1.5 shrink-0">
-            <button @click="library" class="topbar-btn text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100" title="Check if book is in collection using camera">
+            <button @click="library" class="topbar-btn text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100" title="My Books">
               <span class="material-icons text-[1.25rem]!">
                 book
               </span>
             </button>
-            <button @click="scanBook" class="topbar-btn text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100" title="Check if book is in collection using camera">
+            <button @click="scanBook" class="topbar-btn text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100" title="Scan Book">
               <span class="material-icons text-[1.25rem]!">
                 document_scanner
               </span>
@@ -20,7 +20,7 @@
           <div class="w-px h-6 shrink-0 transition-colors duration-300 bg-slate-200 dark:bg-zinc-700"></div>
 
           <div class="flex-1 min-w-0">
-            <button @click="publicLibraries" class="topbar-btn text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100" title="Check if book is in collection using camera">
+            <button @click="publicLibraries" class="topbar-btn text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100" title="View public libraries">
               <span class="material-icons text-[1.25rem]!">
                 public
               </span>
@@ -29,7 +29,7 @@
           </div>
 
           <div class="flex items-center gap-2 shrink-0 sm:ml-0 ml-auto">
-            <button @click="setHasPublicLibrary" class="topbar-btn relative w-8 h-8 rounded-lg transition-colors duration-200 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100" :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+            <button @click="setHasPublicLibrary" class="topbar-btn relative w-8 h-8 rounded-lg transition-colors duration-200 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100" :title="bookshelfApi.user.settings.hasPublicLibrary ? 'Make library private' : 'Make library public'">
               <span class="material-icons text-[1rem]! m-auto">
                 {{ bookshelfApi.user.settings.hasPublicLibrary ? 'visibility' : 'visibility_off' }}
               </span>
