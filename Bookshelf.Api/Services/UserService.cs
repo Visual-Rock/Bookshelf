@@ -8,6 +8,7 @@ public interface IUserService
 {
     User? GetUser(string externalReference);
     Task<User> GetOrCreateUserAsync(string username, string externalReference);
+    bool UpdateUserSettings(User user, bool hasPublicLibrary);
 }
 
 public class UserService(BookshelfContext context) : IUserService
@@ -27,5 +28,17 @@ public class UserService(BookshelfContext context) : IUserService
         }
 
         return user;
+    }
+
+    public bool UpdateUserSettings(User user, bool hasPublicLibrary)
+    {
+        var u = context.Users.FirstOrDefault(u => u.ExternalReference == user.ExternalReference && u.Id == user.Id);
+        
+        if (u is null)
+            return false;
+
+        u.IsShelfPublic = hasPublicLibrary;
+        context.SaveChanges();
+        return true;
     }
 }
