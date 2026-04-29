@@ -22,6 +22,7 @@ public static class KeycloakHelper
             .WithClientSecret(BookshelfClientSecret);
 
         var user = realm.AddUser("user", "user@example.com", "User", "user", "user", "c386e18e-1cd8-4765-9f40-43ca7f4bb24c");
+        var john = realm.AddUser("john", "john.doe@example.com", "John", "Doe", "john", "60d62bdd-7d1a-431c-95cd-5e30b22e6d5c");
     }
 
     public static void AddKeycloakEnvironment(IResourceBuilder<KeycloakResource> keycloak,
