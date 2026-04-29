@@ -1,34 +1,33 @@
+using System.Text.Json;
 using Bookshelf.Api.Config;
-using FlareSolverrSharp;
 
 namespace Bookshelf.Api.Services;
 
 public interface IFlareSolverrService
 {
     Task<string> GetStringAsync(string url);
-    Task<HttpResponseMessage> GetAsync(string url);
 }
 
-public class FlareSolverrService : IFlareSolverrService
+public class FlareSolverrService(IConfiguration config) : IFlareSolverrService
 {
-    private HttpClient _client;
+    private FlareSolverrConfig _flareSolverrConfig = config.GetSection("FlareSolverr").Get<FlareSolverrConfig>()!;
+    private readonly HttpClient _client = new();
+
+    private static string _getCommand = "request.get";
     
-    public FlareSolverrService(IConfiguration config)
+    public async Task<string> GetStringAsync(string url)
     {
-        var flareSolverrConfig = config.GetSection("FlareSolverr").Get<FlareSolverrConfig>()!;
-        
-        var handler = new ClearanceHandler(flareSolverrConfig.ServerUrl)
-        {
-            MaxTimeout = flareSolverrConfig.MaxTimeout, 
-            ProxyUrl = flareSolverrConfig?.ProxyUrl ?? string.Empty,
-            ProxyUsername = flareSolverrConfig?.ProxyUsername ?? string.Empty,
-            ProxyPassword = flareSolverrConfig?.ProxyPassword ?? string.Empty
-        };
-
-        _client = new HttpClient(handler);
+        var response = await SendMessage(_getCommand, url);
+        response.EnsureSuccessStatusCode();
+        var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        return json.RootElement.GetProperty("solution").GetProperty("response").GetString()!;
     }
-    
-    public Task<string> GetStringAsync(string url) => _client.GetStringAsync(url);
 
-    public Task<HttpResponseMessage> GetAsync(string url) => _client.GetAsync(url);
+    private Task<HttpResponseMessage> SendMessage(string command, string url)
+    {
+        var content = JsonContent.Create(new { cmd = command, url, maxTimeout = _flareSolverrConfig.MaxTimeout });
+        return  _client.PostAsync(GetUrl(), content);
+    }
+
+    private string GetUrl() => $"{_flareSolverrConfig.ServerUrl}{(_flareSolverrConfig.ServerUrl.EndsWith('/') ? "" : "/")}v1";
 }

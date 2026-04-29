@@ -13,41 +13,16 @@ public class ThaliaService : IExternalBookService
     private readonly IPublisherService _publisherService;
     private readonly IBookCoverService _bookCoverService;
     private readonly ILogger<ThaliaService> _logger;
+    private readonly IFlareSolverrService _flareSolverrService;
     private readonly string _baseUrl = "https://www.thalia.de";
-    private readonly HttpClient _client;
 
-    public ThaliaService(IAuthorService authorService, IPublisherService publisherService, IBookCoverService bookCoverService, ILogger<ThaliaService> logger)
+    public ThaliaService(IAuthorService authorService, IPublisherService publisherService, IBookCoverService bookCoverService, ILogger<ThaliaService> logger, IFlareSolverrService flareSolverrService)
     {
         _authorService = authorService;
         _publisherService = publisherService;
         _bookCoverService = bookCoverService;
         _logger = logger;
-        
-        var cookieContainer = new CookieContainer();
-        var handler = new HttpClientHandler
-        {
-            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate | DecompressionMethods.Brotli,
-            CookieContainer = cookieContainer,
-            UseCookies = true
-        };
-
-        cookieContainer.Add(new Uri("https://www.thalia.de"), []);
-
-        _client = new HttpClient(handler);
-
-        _client.DefaultRequestHeaders.Host = "www.thalia.de";
-        _client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (X11; Linux x86_64; rv:150.0) Gecko/20100101 Firefox/150.0");
-        _client.DefaultRequestHeaders.Accept.ParseAdd("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        _client.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-US,en;q=0.9");
-        _client.DefaultRequestHeaders.Add("Sec-GPC", "1");
-        _client.DefaultRequestHeaders.ConnectionClose = false;
-        _client.DefaultRequestHeaders.Add("Upgrade-Insecure-Requests", "1");
-        _client.DefaultRequestHeaders.Add("Sec-Fetch-Dest", "document");
-        _client.DefaultRequestHeaders.Add("Sec-Fetch-Mode", "navigate");
-        _client.DefaultRequestHeaders.Add("Sec-Fetch-Site", "same-origin");
-        _client.DefaultRequestHeaders.Add("Sec-Fetch-User", "?1");
-        _client.DefaultRequestHeaders.Add("Priority", "u=0, i");
-        _client.DefaultRequestHeaders.TE.ParseAdd("trailers");
+        _flareSolverrService = flareSolverrService;
     }
 
     private record BookParseResult(string Name, string Description, DateTime PublishDate, string Publisher, int Pages, string Language, string[] Authors, string ImageUrl);
@@ -94,12 +69,7 @@ public class ThaliaService : IExternalBookService
     private async Task<string?> SearchThalia(string isbn)
     {
         var url = $"{_baseUrl}/suche?sq={isbn}";
-        _client.DefaultRequestHeaders.Referrer = new Uri(url);
-        var response = await _client.GetAsync(url);
-
-        if (!response.IsSuccessStatusCode)
-            return null;
-        return await response.Content.ReadAsStringAsync();
+        return await _flareSolverrService.GetStringAsync(url);
     }
 
     private string? GetProductUrl(string searchResult)
@@ -113,13 +83,7 @@ public class ThaliaService : IExternalBookService
         return results.First().SelectSingleNode("a").Attributes["href"].Value;
     }
 
-    private async Task<string?> GetProductDetails(string url)
-    {
-        var response = await _client.GetAsync($"{_baseUrl}{url}");
-        if (!response.IsSuccessStatusCode)
-            return null;
-        return await response.Content.ReadAsStringAsync();
-    }
+    private async Task<string?> GetProductDetails(string url) => await _flareSolverrService.GetStringAsync($"{_baseUrl}{url}");
 
     private bool TryParseProductDetails(string html, [NotNullWhen(true)] out BookParseResult? result)
     {

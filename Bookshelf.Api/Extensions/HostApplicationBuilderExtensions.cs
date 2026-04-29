@@ -20,9 +20,14 @@ public static class HostApplicationBuilderExtensions
         builder.Services.AddScoped<IBookCoverService, BookCoverService>();
         builder.Services.AddScoped<ILibraryService, LibraryService>();
         
-        builder.Services.AddScoped<IExternalBookService, ThaliaService>();
         if (builder.Configuration["GoogleApi:ApiKey"] is not null)
             builder.Services.AddScoped<IExternalBookService, GoogleApiService>();
+
+        if (builder.Configuration["FlareSolverr:ServerUrl"] is not null)
+        {
+            builder.Services.AddScoped<IFlareSolverrService, FlareSolverrService>();
+            builder.Services.AddScoped<IExternalBookService, ThaliaService>();
+        }
         builder.Services.AddHttpClient<IExternalBookService, IsbnSearchService>();
         
         return builder;
