@@ -6,12 +6,12 @@
         <div class="flex items-center gap-3 px-4 h-14">
           <div class="flex items-center gap-1.5 shrink-0">
             <button @click="library" class="topbar-btn text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100" title="Check if book is in collection using camera">
-              <span class="material-icons !text-[1.25rem]">
+              <span class="material-icons text-[1.25rem]!">
                 book
               </span>
             </button>
             <button @click="scanBook" class="topbar-btn text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100" title="Check if book is in collection using camera">
-              <span class="material-icons !text-[1.25rem]">
+              <span class="material-icons text-[1.25rem]!">
                 document_scanner
               </span>
             </button>
@@ -19,8 +19,13 @@
 
           <div class="w-px h-6 shrink-0 transition-colors duration-300 bg-slate-200 dark:bg-zinc-700"></div>
 
-          <div class="hidden sm:flex flex-1 min-w-0">
-            <SearchBar v-model="searchQuery" @search="onSearch" />
+          <div class="flex-1 min-w-0">
+            <button @click="publicLibraries" class="topbar-btn text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100" title="Check if book is in collection using camera">
+              <span class="material-icons text-[1.25rem]!">
+                public
+              </span>
+            </button>
+<!--            <SearchBar v-model="searchQuery" @search="onSearch" />-->
           </div>
 
           <div class="flex items-center gap-2 shrink-0 sm:ml-0 ml-auto">
@@ -56,9 +61,9 @@
         <slot />
       </main>
 
-      <div class="sm:hidden sticky bottom-0 z-50 border-t px-3 py-2 transition-colors duration-300 bg-white/90 border-slate-200 backdrop-blur-md dark:bg-zinc-900/90 dark:border-zinc-800">
-        <SearchBar v-model="searchQuery" @search="onSearch" />
-      </div>
+<!--      <div class="sm:hidden sticky bottom-0 z-50 border-t px-3 py-2 transition-colors duration-300 bg-white/90 border-slate-200 backdrop-blur-md dark:bg-zinc-900/90 dark:border-zinc-800">-->
+<!--        <SearchBar v-model="searchQuery" @search="onSearch" />-->
+<!--      </div>-->
     </div>
   </div>
 </template>
@@ -93,6 +98,10 @@ function library() {
 
 function scanBook() {
   router.push('/scan');
+}
+
+function publicLibraries() {
+  router.push('/libraries');
 }
 
 async function setHasPublicLibrary() {
