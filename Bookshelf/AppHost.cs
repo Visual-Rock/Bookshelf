@@ -1,6 +1,7 @@
 using Aurora.AppHost.Extensions;
 using Bookshelf.Extensions;
 using Bookshelf.Helper;
+using Bookshelf.Resources;
 using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -8,12 +9,17 @@ var builder = DistributedApplication.CreateBuilder(args);
 var keycloak = builder.AddKeycloak();
 var (_, db, dbMigrator) = builder.AddBookshelfDatabase();
 
+var flareSolverr = builder.AddFlareSolverr("bookshelf-flaresolverr");
+
 var api = builder.AddProject<Bookshelf_Api>("bookshelf-api")
     .WithApiReference()
-    .WaitForCompletion(dbMigrator).WithReference(db);
+    .WaitForCompletion(dbMigrator).WithReference(db)
+    .WaitFor(flareSolverr);
+api.WithEnvironment("FlareSolverr:ServerUrl", flareSolverr.GetEndpoint("http"));
 
 var web = builder.AddViteApp("bookshelf-web", "../Bookshelf.Web")
-    .WithReference(api).WithEndpoint("http", annotation => annotation.Port = 5028);
+    .WithReference(api).WaitFor(api).WithEndpoint("http", annotation => annotation.Port = 5028);
+
 
 KeycloakHelper.ConfigureKeycloak(keycloak, api, web);
 KeycloakHelper.AddKeycloakEnvironment(keycloak, api);
