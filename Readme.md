@@ -14,7 +14,7 @@ A full-stack application for managing personal book collections, featuring book 
 
 Supported External Providers:
 - Google Books API
-- Thalia (German boo seller)
+- Thalia (German book seller)
 - FindISBN
 
 ## Getting Started
