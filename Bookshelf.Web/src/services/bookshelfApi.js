@@ -20,6 +20,10 @@ class BookshelfApi {
     }
   }
   
+  updateSettings() {
+    return apiClient.post('/user/settings', this.user.settings);
+  }
+  
   getBookByIsbn(isbn) {
     return apiClient.get(`/book?isbn=${encodeURIComponent(isbn)}`);
   }

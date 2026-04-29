@@ -24,21 +24,26 @@
           </div>
 
           <div class="flex items-center gap-2 shrink-0 sm:ml-0 ml-auto">
+            <button @click="setHasPublicLibrary" class="topbar-btn relative w-8 h-8 rounded-lg transition-colors duration-200 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100" :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
+              <span class="material-icons text-[1rem]! m-auto">
+                {{ bookshelfApi.user.settings.hasPublicLibrary ? 'visibility' : 'visibility_off' }}
+              </span>
+            </button>
             <button @click="isDark = !isDark" class="topbar-btn relative w-8 h-8 rounded-lg transition-colors duration-200 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100" :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'">
-              <span class="material-icons !text-[1rem] m-auto">
+              <span class="material-icons text-[1rem]! m-auto">
                 {{ isDark ? 'light_mode' : 'dark_mode' }}
               </span>
             </button>
-
+            
             <div class="flex items-center gap-2 px-2.5 py-1 rounded-full text-sm font-medium border transition-colors duration-200 cursor-default select-none bg-primary-50 border-primary-200 text-primary-700 dark:bg-primary-950/60 dark:border-primary-800 dark:text-primary-300">
               <span class="flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold bg-primary-500 text-white dark:bg-primary-600">
                 {{ userInitials }}
               </span>
-              <span class="hidden sm:inline max-w-[120px] truncate">{{ username }}</span>
+              <span class="hidden sm:inline max-w-30 truncate">{{ username }}</span>
             </div>
 
             <button @click="onLogout" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium border transition-all duration-200 border-slate-200 text-slate-500 hover:bg-red-50 hover:border-red-200 hover:text-red-600 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-red-950/50 dark:hover:border-red-800 dark:hover:text-red-400" title="Log out">
-              <span class="material-icons !text-[1rem] shrink-0">
+              <span class="material-icons text-[1rem]! shrink-0">
                 logout
               </span>
               <span class="hidden sm:inline">Logout</span>
@@ -64,13 +69,6 @@ import { useRouter } from 'vue-router';
 import bookshelfApi from '../services/bookshelfApi';
 import SearchBar from './SearchBar.vue';
 
-const props = defineProps({
-  defaultDark: {
-    type: Boolean,
-    default: false,
-  },
-})
-
 const router = useRouter();
 const username = computed(() => bookshelfApi.user?.username ?? bookshelfApi.user?.Username ?? '')
 const isDark = ref(document.documentElement.classList.contains('dark'))
@@ -95,6 +93,11 @@ function library() {
 
 function scanBook() {
   router.push('/scan');
+}
+
+async function setHasPublicLibrary() {
+  bookshelfApi.user.settings.hasPublicLibrary = !bookshelfApi.user.settings.hasPublicLibrary;
+  await bookshelfApi.updateSettings();
 }
 
 function onLogout() {
