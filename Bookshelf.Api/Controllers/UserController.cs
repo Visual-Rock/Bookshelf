@@ -1,3 +1,4 @@
+using Bookshelf.Api.Dto;
 using Bookshelf.Api.Extensions;
 using Bookshelf.Api.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -25,7 +26,15 @@ public class UserController(IUserService userService) : ControllerBase
     {
         if (User.GetUser(userService) is not { } user)
             return Unauthorized();
-        return Ok(new { user.Id, user.Username });
+        return Ok(new { user.Id, user.Username, Settings = new SettingsDto { HasPublicLibrary = user.IsShelfPublic } });
+    }
+
+    [HttpPost("settings")]
+    public IActionResult SetSettings([FromBody] SettingsDto settings)
+    {
+        if (User.GetUser(userService) is not { } user)
+            return Unauthorized();
+        return userService.UpdateUserSettings(user, settings.HasPublicLibrary) ? NoContent() : BadRequest();
     }
 
     [HttpGet]

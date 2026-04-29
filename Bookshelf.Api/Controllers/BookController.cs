@@ -11,14 +11,6 @@ public record struct BookIsbnBody(string Isbn);
 [Route("book")]
 public class BookController(IUserService userService, IIsbnService isbnService, IBookService bookService, IBookCoverService bookCoverService) : ControllerBase
 {
-    [HttpGet("list")]
-    public IActionResult GetBooksForUser()
-    {
-        if (User.GetUser(userService) is not { } user)
-            return Unauthorized();
-        return Ok(bookService.GetBooksForUser(user).Select(x => x.ToDto(user)));
-    }
-    
     [HttpPost("add")]
     public async Task<IActionResult> AddBook([FromBody] BookIsbnBody body)
     {

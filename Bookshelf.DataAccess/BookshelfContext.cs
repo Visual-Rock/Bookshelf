@@ -23,6 +23,7 @@ public class BookshelfContext(DbContextOptions<BookshelfContext> options) : DbCo
             b.Property(u => u.Id).HasColumnName("id");
             b.Property(u => u.Username).HasColumnName("username").HasMaxLength(32);
             b.Property(u => u.ExternalReference).HasColumnName("external_reference");
+            b.Property(u => u.IsShelfPublic).HasColumnName("is_shelf_public");
 
             b.HasIndex(u => u.Username, "ix_username").IsUnique();
         });

@@ -25,7 +25,7 @@
                 enter-to-class="transform translate-y-0" leave-active-class="transition duration-200 ease-in"
                 leave-from-class="transform translate-y-0" leave-to-class="transform translate-y-full">
       <div v-if="book"
-           class="fixed inset-x-0 bottom-0 z-[60] bg-white dark:bg-zinc-900 border-t border-slate-200 dark:border-zinc-800 shadow-2xl p-6 pb-8 sm:pb-6 rounded-t-3xl">
+           class="fixed inset-x-0 bottom-0 z-60 bg-white dark:bg-zinc-900 border-t border-slate-200 dark:border-zinc-800 shadow-2xl p-6 pb-8 sm:pb-6 rounded-t-3xl">
         <div class="max-w-2xl mx-auto">
           <div class="flex justify-between items-start mb-4">
             <h2 class="flex items-center text-xl font-bold text-slate-900 dark:text-zinc-100">
@@ -64,6 +64,25 @@
                   <span class="font-medium text-slate-700 dark:text-zinc-300">ISBN:</span>
                   {{ book.isbn }}
                 </p>
+              </div>
+
+              <div v-if="book.publicUserAmount && Object.keys(book.publicUserAmount).length > 0" class="mt-4">
+                <p class="text-xs font-medium text-slate-700 dark:text-zinc-300 mb-2 flex items-center gap-1.5">
+                  <span class="material-icons text-[14px]">people</span>
+                  In other libraries
+                </p>
+                <ul class="space-y-1">
+                  <li v-for="(amount, username) in book.publicUserAmount" :key="username"
+                      class="flex items-center justify-between text-xs text-slate-500 dark:text-zinc-500 px-2 py-1 rounded-md hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors">
+                    <span class="flex items-center gap-1.5">
+                      <span class="material-icons text-[13px] text-slate-400 dark:text-zinc-500">person</span>
+                      <span class="text-slate-600 dark:text-zinc-400">{{ username }}</span>
+                    </span>
+                    <span class="font-medium text-slate-700 dark:text-zinc-300 tabular-nums">
+                      {{ amount }} {{ amount === 1 ? 'copy' : 'copies' }}
+                    </span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>

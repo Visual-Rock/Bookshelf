@@ -7,12 +7,15 @@ namespace Bookshelf.Api.Services;
 public interface IUserService
 {
     User? GetUser(string externalReference);
+    User? GetUser(Guid id);
     Task<User> GetOrCreateUserAsync(string username, string externalReference);
+    bool UpdateUserSettings(User user, bool hasPublicLibrary);
 }
 
 public class UserService(BookshelfContext context) : IUserService
 {
     public User? GetUser(string externalReference) => context.Users.FirstOrDefault(u => u.ExternalReference == externalReference);
+    public User? GetUser(Guid id) => context.Users.FirstOrDefault(u => u.Id == id);
 
     public async Task<User> GetOrCreateUserAsync(string username, string externalReference)
     {
@@ -27,5 +30,17 @@ public class UserService(BookshelfContext context) : IUserService
         }
 
         return user;
+    }
+
+    public bool UpdateUserSettings(User user, bool hasPublicLibrary)
+    {
+        var u = context.Users.FirstOrDefault(u => u.ExternalReference == user.ExternalReference && u.Id == user.Id);
+        
+        if (u is null)
+            return false;
+
+        u.IsShelfPublic = hasPublicLibrary;
+        context.SaveChanges();
+        return true;
     }
 }
