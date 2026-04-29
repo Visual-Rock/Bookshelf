@@ -20,7 +20,7 @@
     </div>
 
     <div v-else class="book-grid">
-      <div v-for="book in books" :key="book.id" class="book-card">
+      <div v-for="book in books" :key="book.id" class="book-card" @click="selectBook(book)">
         <div class="book-cover">
           <img :src="bookshelfApi.getThumbnailUrl(book.id)" :alt="book.title" />
           <div v-if="book.amount > 1" class="absolute top-2 right-2 flex items-center justify-center min-w-6 h-6 px-1.5 rounded-full bg-primary-600 text-white text-xs font-bold">
@@ -37,6 +37,18 @@
         </div>
       </div>
     </div>
+
+    <BookDetailsFlyout :book="selectedBook" :adding="adding" :removing="removing" @close="selectedBook = null" @add="addBook" @remove="removeBook"/>
+
+    <div v-if="actionError" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-60 bg-red-600 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2">
+      <span class="material-icons">error_outline</span>
+      {{ actionError }}
+    </div>
+
+    <div v-if="success" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-60 bg-primary-600 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2">
+      <span class="material-icons">check_circle</span>
+      {{ success }}
+    </div>
   </div>
 </template>
 
@@ -44,6 +56,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import bookshelfApi from '../services/bookshelfApi'
+import BookDetailsFlyout from '../components/BookDetailsFlyout.vue'
 
 const route = useRoute()
 const userId = computed(() => route.params.userId ?? null)
@@ -51,6 +64,68 @@ const userId = computed(() => route.params.userId ?? null)
 const books = ref([])
 const loading = ref(true)
 const error = ref(null)
+
+const selectedBook = ref(null)
+const adding = ref(false)
+const removing = ref(false)
+const actionError = ref(null)
+const success = ref(null)
+
+function selectBook(book) {
+  selectedBook.value = book
+}
+
+async function addBook() {
+  if (!selectedBook.value) return
+
+  adding.value = true
+  actionError.value = null
+
+  try {
+    await bookshelfApi.addBook(selectedBook.value.isbn)
+    showSuccess('Book added to collection!')
+    await fetchBooks()
+    selectedBook.value = books.value.find(b => b.id === selectedBook.value.id) || null
+  } catch (err) {
+    console.error('Add book error:', err)
+    showActionError('Failed to add book to collection')
+  } finally {
+    adding.value = false
+  }
+}
+
+async function removeBook() {
+  if (!selectedBook.value) return
+
+  removing.value = true
+  actionError.value = null
+
+  try {
+    await bookshelfApi.removeBook(selectedBook.value.id, 1)
+    showSuccess('Book removed from collection!')
+    await fetchBooks()
+    selectedBook.value = books.value.find(b => b.id === selectedBook.value.id) || null
+  } catch (err) {
+    console.error('Remove book error:', err)
+    showActionError('Failed to remove book from collection')
+  } finally {
+    removing.value = false
+  }
+}
+
+function showActionError(msg) {
+  actionError.value = msg
+  setTimeout(() => {
+    actionError.value = null
+  }, 3000)
+}
+
+function showSuccess(msg) {
+  success.value = msg
+  setTimeout(() => {
+    success.value = null
+  }, 3000)
+}
 
 async function fetchBooks() {
   loading.value = true
@@ -84,7 +159,7 @@ onMounted(fetchBooks)
 
 .book-card {
   width: 150px;
-  cursor: default;
+  cursor: pointer;
 }
 
 .book-cover {
@@ -109,5 +184,19 @@ onMounted(fetchBooks)
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
 }
 </style>
