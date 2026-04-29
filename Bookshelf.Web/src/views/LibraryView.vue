@@ -22,7 +22,7 @@
     <div v-else class="book-grid">
       <div v-for="book in books" :key="book.id" class="book-card" @click="selectBook(book)">
         <div class="book-cover">
-          <img :src="bookshelfApi.getThumbnailUrl(book.id)" :alt="book.title" />
+          <img :src="bookshelfApi.getThumbnailUrl(book.id)" :alt="book.title" loading="lazy"/>
           <div v-if="book.amount > 1" class="absolute top-2 right-2 flex items-center justify-center min-w-6 h-6 px-1.5 rounded-full bg-primary-600 text-white text-xs font-bold">
             {{ book.amount }}
           </div>
