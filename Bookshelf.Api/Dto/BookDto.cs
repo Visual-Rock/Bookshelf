@@ -19,6 +19,8 @@ public class BookDto
 
     public string[] Authors { get; set; } = [];
     public string[] Categories { get; set; } = [];
+
+    public Dictionary<string, int> PublicUserAmount { get; set; } = [ ];
 }
 
 internal static class BookDtoExtensions
@@ -45,6 +47,8 @@ internal static class BookDtoExtensions
         var b = book.ToDto();
         if (book.UserBookRelations.FirstOrDefault(x => x.UserId == user.Id) is { } relation)
             b.Amount = relation.Count;
+        b.PublicUserAmount = book.UserBookRelations.Where(x => x.User is not null && x.User.IsShelfPublic && x.UserId != user.Id)
+                                                   .ToDictionary(x => x.User.Username, x => x.Count);
         return b;
     }
 }

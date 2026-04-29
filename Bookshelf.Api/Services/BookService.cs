@@ -15,7 +15,7 @@ public interface IBookService
     void RemoveBooksForUser(Book book, User user, int amount);
 }
 
-public class BookService(BookshelfContext context, IServiceProvider serviceProvider) : IBookService
+public class BookService(BookshelfContext context, IServiceProvider serviceProvider, ILogger<BookService> logger) : IBookService
 {
     public void AddBook(Book book)
     {
@@ -35,7 +35,7 @@ public class BookService(BookshelfContext context, IServiceProvider serviceProvi
 
     public async Task<Book?> GetBookByIsbn(string isbn)
     {
-        var book = context.Books.Include(b => b.UserBookRelations).Include(b => b.Authors).Include(x => x.Categories).FirstOrDefault(x => x.Isbn == isbn);
+        var book = context.Books.Include(b => b.Authors).Include(x => x.Categories).Include(b => b.UserBookRelations).ThenInclude(r => r.User).FirstOrDefault(x => x.Isbn == isbn);
         
         if (book is null)
         {
@@ -43,12 +43,19 @@ public class BookService(BookshelfContext context, IServiceProvider serviceProvi
 
             foreach (var service in external)
             {
-                book = await service.GetBookFromIsbn(isbn, true);
-                if (book is not null)
+                try
                 {
-                    context.Books.Add(book);
-                    await context.SaveChangesAsync();
-                    break;
+                    book = await service.GetBookFromIsbn(isbn, true);
+                    if (book is not null)
+                    {
+                        context.Books.Add(book);
+                        await context.SaveChangesAsync();
+                        break;
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger.LogError("failed to get book from external provider: {e}", e);
                 }
             }
         }
