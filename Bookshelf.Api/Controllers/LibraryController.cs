@@ -32,6 +32,6 @@ public class LibraryController(IUserService userService, ILibraryService library
             libraryUser = u;
         }
         
-        return Ok(bookService.GetBooksForUser(libraryUser).Select(x => x.ToDto(libraryUser)));
+        return Ok(bookService.GetBooksForUser(libraryUser).OrderBy(b => b.Title).Select(x => x.ToDto(libraryUser)));
     }
 }
