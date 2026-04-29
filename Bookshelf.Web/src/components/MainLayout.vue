@@ -72,7 +72,6 @@
 import { ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import bookshelfApi from '../services/bookshelfApi';
-import SearchBar from './SearchBar.vue';
 
 const router = useRouter();
 const username = computed(() => bookshelfApi.user?.username ?? bookshelfApi.user?.Username ?? '')

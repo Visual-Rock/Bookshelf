@@ -51,6 +51,10 @@ class BookshelfApi {
   getCoverUrl(bookId) {
     return `${apiClient.baseUrl}/book/${bookId}/cover`;
   }
+  
+  getPublicLibraries() {
+    return apiClient.get(`/library/public`);
+  }
 
   getThumbnailUrl(bookId) {
     return `${apiClient.baseUrl}/book/${bookId}/thumbnail`;
