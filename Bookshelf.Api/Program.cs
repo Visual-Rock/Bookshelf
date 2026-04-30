@@ -21,10 +21,10 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+app.UseBookshelfForwardedHeaders();
 app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseBookshelfForwardedHeaders();
 app.MapControllers();
 app.Run();
