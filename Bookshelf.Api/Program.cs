@@ -25,5 +25,6 @@ app.UseCors();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseBookshelfForwardedHeaders();
 app.MapControllers();
 app.Run();
