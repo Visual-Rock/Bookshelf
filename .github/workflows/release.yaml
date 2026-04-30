@@ -19,28 +19,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-
       - name: Set lowercase owner
         run: echo "OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-
       - name: Publish Api
-        run: dotnet publish Bookshelf.Api/Bookshelf.Api.csproj --os linux --arch x64 /t:PublishContainer -c Release /p:ContainerRegistry=${{ env.REGISTRY }} /p:ContainerImageTag=${{ github.ref_name }} /p:ContainerRepository=${{ github.repository_owner }}/bookshelf-api
-
+        run: dotnet publish Bookshelf.Api/Bookshelf.Api.csproj --os linux --arch x64 /t:PublishContainer -c Release /p:ContainerRegistry=${{ env.REGISTRY }} /p:ContainerImageTag="${{ github.ref_name }};latest" /p:ContainerRepository=${{ github.repository_owner }}/bookshelf-api
       - name: Publish MigrationService
-        run: dotnet publish Bookshelf.MigrationService/Bookshelf.MigrationService.csproj --os linux --arch x64 /t:PublishContainer -c Release /p:ContainerRegistry=${{ env.REGISTRY }} /p:ContainerImageTag=${{ github.ref_name }} /p:ContainerRepository=${{ github.repository_owner }}/bookshelf-migration-service
-
+        run: dotnet publish Bookshelf.MigrationService/Bookshelf.MigrationService.csproj --os linux --arch x64 /t:PublishContainer -c Release /p:ContainerRegistry=${{ env.REGISTRY }} /p:ContainerImageTag="${{ github.ref_name }};latest" /p:ContainerRepository=${{ github.repository_owner }}/bookshelf-migration-service
       - name: Build and push Web
         uses: docker/build-push-action@v5
         with:
