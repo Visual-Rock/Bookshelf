@@ -27,20 +27,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Lowercase repository owner
-        run: |
-          echo "OWNER_LC=${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]' >> $GITHUB_ENV
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
 
+      - name: Set lowercase owner
+        run: echo "OWNER=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Publish Api
-        run: dotnet publish Bookshelf.Api/Bookshelf.Api.csproj --os linux --arch x64 /t:PublishContainer -c Release /p:ContainerRegistry=${{ env.REGISTRY }} /p:ContainerImageTag=${{ github.ref_name }} /p:ContainerRepository=${{ env.OWNER_LC }}/bookshelf-api
+        run: dotnet publish Bookshelf.Api/Bookshelf.Api.csproj --os linux --arch x64 /t:PublishContainer -c Release /p:ContainerRegistry=${{ env.REGISTRY }} /p:ContainerImageTag=${{ github.ref_name }} /p:ContainerRepository=${{ github.repository_owner }}/bookshelf-api
 
       - name: Publish MigrationService
-        run: dotnet publish Bookshelf.MigrationService/Bookshelf.MigrationService.csproj --os linux --arch x64 /t:PublishContainer -c Release /p:ContainerRegistry=${{ env.REGISTRY }} /p:ContainerImageTag=${{ github.ref_name }} /p:ContainerRepository=${{ env.OWNER_LC }}/bookshelf-migration-service
+        run: dotnet publish Bookshelf.MigrationService/Bookshelf.MigrationService.csproj --os linux --arch x64 /t:PublishContainer -c Release /p:ContainerRegistry=${{ env.REGISTRY }} /p:ContainerImageTag=${{ github.ref_name }} /p:ContainerRepository=${{ github.repository_owner }}/bookshelf-migration-service
 
       - name: Build and push Web
         uses: docker/build-push-action@v5
@@ -48,5 +47,5 @@ jobs:
           context: ./Bookshelf.Web
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.OWNER_LC }}/bookshelf-web:latest
-            ${{ env.REGISTRY }}/${{ env.OWNER_LC }}/bookshelf-web:${{ github.ref_name }}
+            ${{ env.REGISTRY }}/${{ env.OWNER }}/bookshelf-web:latest
+            ${{ env.REGISTRY }}/${{ env.OWNER }}/bookshelf-web:${{ github.ref_name }}
