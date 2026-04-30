@@ -129,5 +129,6 @@ public static class HostApplicationBuilderExtensions
         forwardedHeadersOptions.KnownProxies.Clear();
         
         app.UseForwardedHeaders(forwardedHeadersOptions);
+        app.UsePathBase(app.Configuration["BasePath"]);
     }
 }
