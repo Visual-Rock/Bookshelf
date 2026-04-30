@@ -3,6 +3,7 @@ using Bookshelf.Api.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace Bookshelf.Api.Extensions;
@@ -51,7 +52,7 @@ public static class HostApplicationBuilderExtensions
             });
         });
     }
-
+    
     public static IHostApplicationBuilder AddBookshelfAuthentication(this IHostApplicationBuilder builder)
     {
         var config = builder.Configuration.GetSection("Authentication");
@@ -113,5 +114,20 @@ public static class HostApplicationBuilderExtensions
             });
 
         return builder;
+    }
+    
+    public static void UseBookshelfForwardedHeaders(this WebApplication app)
+    {
+        var forwardedHeadersOptions = new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                               ForwardedHeaders.XForwardedProto |
+                               ForwardedHeaders.XForwardedHost
+        };
+        
+        forwardedHeadersOptions.KnownIPNetworks.Clear();
+        forwardedHeadersOptions.KnownProxies.Clear();
+        
+        app.UseForwardedHeaders(forwardedHeadersOptions);
     }
 }
