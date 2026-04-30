@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>dotnet-Bookshelf.MigrationService-fbf63411-87ef-4b81-a4bf-461b51fa9003</UserSecretsId>
+        <ContainerRepository>bookshelf-migration-service</ContainerRepository>
     </PropertyGroup>
 
     <ItemGroup>

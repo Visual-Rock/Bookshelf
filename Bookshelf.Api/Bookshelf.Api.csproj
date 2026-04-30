@@ -4,6 +4,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>1e2e91f4-ccc6-4ad4-a20d-8ec6861fcd23</UserSecretsId>
+        <ContainerRepository>bookshelf-api</ContainerRepository>
     </PropertyGroup>
 
     <ItemGroup>
